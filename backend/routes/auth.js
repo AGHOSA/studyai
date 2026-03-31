@@ -54,6 +54,26 @@ router.post('/login', async (req, res) => {
       return res.status(401).json({ error: 'Invalid email or password.' });
     }
 
+    // ✅ Update streak on login
+    const now = new Date();
+    const last = user.lastStudiedAt ? new Date(user.lastStudiedAt) : null;
+
+    if (!last) {
+      user.streak = 1;
+    } else {
+      const diffDays = Math.floor((now - last) / (1000 * 60 * 60 * 24));
+      if (diffDays === 1) {
+        user.streak += 1;
+      } else if (diffDays > 1) {
+        user.streak = 1;
+      } else if (diffDays === 0) {
+        if (user.streak === 0) user.streak = 1;
+      }
+    }
+
+    user.lastStudiedAt = now;
+    await user.save();
+
     const token = signToken(user._id);
 
     res.json({
@@ -85,6 +105,26 @@ router.get('/me', protect, async (req, res) => {
       aiCreditsUsed: user.aiCreditsUsed,
       subjects: user.subjects
     });
+  } catch (err) {
+    res.status(500).json({ error: err.message });
+  }
+});
+
+// POST /api/auth/update-progress
+router.post('/update-progress', protect, async (req, res) => {
+  try {
+    const { subject, score } = req.body;
+    const user = await User.findById(req.user._id);
+
+    const existing = user.subjects.find(s => s.name === subject);
+    if (existing) {
+      existing.progress = Math.round((existing.progress + score) / 2);
+    } else {
+      user.subjects.push({ name: subject, progress: score });
+    }
+
+    await user.save();
+    res.json({ subjects: user.subjects });
   } catch (err) {
     res.status(500).json({ error: err.message });
   }

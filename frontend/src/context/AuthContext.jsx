@@ -25,7 +25,9 @@ export const AuthProvider = ({ children }) => {
   const login = async (email, password) => {
     const res = await auth.login({ email, password });
     localStorage.setItem('studyai_token', res.data.token);
-    setUser(res.data.user);
+    // ✅ Fetch fresh user data including updated streak
+    const freshUser = await auth.me();
+    setUser(freshUser.data);
     return res.data;
   };
 

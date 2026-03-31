@@ -1,5 +1,6 @@
 import React, { useState, useRef, useEffect } from 'react';
 import { ai } from '../utils/api';
+import axios from 'axios';
 import toast from 'react-hot-toast';
 
 const CHIPS = [
@@ -13,18 +14,52 @@ const CHIPS = [
   'Explain recursion with example',
 ];
 
+const WELCOME = { role: 'assistant', content: 'Hi! I\'m your AI study buddy 🎓 Ask me anything — concepts, doubts, or "explain like I\'m 5". I\'m here 24/7 to help you ace your exams!' };
+
 export default function ChatBot() {
-  const [messages, setMessages] = useState([
-    { role: 'assistant', content: 'Hi! I\'m your AI study buddy 🎓 Ask me anything — concepts, doubts, or "explain like I\'m 5". I\'m here 24/7 to help you ace your exams!' }
-  ]);
+  const [messages, setMessages] = useState([WELCOME]);
   const [input, setInput] = useState('');
   const [loading, setLoading] = useState(false);
   const [chatId, setChatId] = useState(null);
+  const [chatList, setChatList] = useState([]);
+  const [showHistory, setShowHistory] = useState(false);
   const bottomRef = useRef();
+
+  // Load chat list on mount
+  useEffect(() => {
+    loadChatList();
+  }, []);
 
   useEffect(() => {
     bottomRef.current?.scrollIntoView({ behavior: 'smooth' });
   }, [messages]);
+
+  const loadChatList = async () => {
+    try {
+      const token = localStorage.getItem('token');
+      const res = await axios.get(`${process.env.REACT_APP_API_URL}/chats`, {
+        headers: { Authorization: `Bearer ${token}` }
+      });
+      setChatList(res.data.chats || []);
+    } catch (err) {
+      // silently fail
+    }
+  };
+
+  const loadChat = async (id) => {
+    try {
+      const token = localStorage.getItem('token');
+      const res = await axios.get(`${process.env.REACT_APP_API_URL}/chats/${id}`, {
+        headers: { Authorization: `Bearer ${token}` }
+      });
+      const chat = res.data.chat;
+      setMessages([WELCOME, ...chat.messages]);
+      setChatId(id);
+      setShowHistory(false);
+    } catch (err) {
+      toast.error('Could not load chat');
+    }
+  };
 
   const send = async (msgText) => {
     const text = (msgText || input).trim();
@@ -36,15 +71,15 @@ export default function ChatBot() {
     setLoading(true);
 
     try {
-      // Build history (exclude initial greeting, only real conversation)
       const history = newMessages
-        .slice(1) // skip initial greeting
+        .slice(1)
         .slice(-10)
         .map(m => ({ role: m.role, content: m.content }));
 
       const res = await ai.chat(text, chatId, history.slice(0, -1));
       setChatId(res.data.chatId);
       setMessages(prev => [...prev, { role: 'assistant', content: res.data.reply }]);
+      loadChatList(); // refresh chat list
     } catch (err) {
       const errMsg = err.response?.data?.error || 'Something went wrong';
       setMessages(prev => [...prev, { role: 'assistant', content: `⚠️ ${errMsg}` }]);
@@ -61,6 +96,12 @@ export default function ChatBot() {
     setChatId(null);
   };
 
+  const newChat = () => {
+    setMessages([WELCOME]);
+    setChatId(null);
+    setShowHistory(false);
+  };
+
   return (
     <div>
       <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: 28 }}>
@@ -68,8 +109,36 @@ export default function ChatBot() {
           <h1 style={{ fontFamily: 'Syne', fontSize: 26, fontWeight: 700 }}>Doubt Solver AI</h1>
           <p style={{ fontSize: 14, color: 'var(--muted)', marginTop: 4 }}>Your personal AI teacher — available 24/7.</p>
         </div>
-        <button className="btn btn-ghost btn-sm" onClick={clearChat}>🗑️ Clear chat</button>
+        <div style={{ display: 'flex', gap: 8 }}>
+          <button className="btn btn-ghost btn-sm" onClick={() => { setShowHistory(!showHistory); loadChatList(); }}>
+            📋 History ({chatList.length})
+          </button>
+          <button className="btn btn-ghost btn-sm" onClick={newChat}>✏️ New chat</button>
+          <button className="btn btn-ghost btn-sm" onClick={clearChat}>🗑️ Clear</button>
+        </div>
       </div>
+
+      {/* Chat History Panel */}
+      {showHistory && (
+        <div className="card" style={{ marginBottom: 16 }}>
+          <div style={{ fontWeight: 600, marginBottom: 12 }}>📋 Previous Chats</div>
+          {chatList.length === 0 ? (
+            <p style={{ color: 'var(--muted)', fontSize: 14 }}>No chat history yet.</p>
+          ) : (
+            chatList.map(chat => (
+              <div key={chat._id}
+                onClick={() => loadChat(chat._id)}
+                style={{ padding: '10px 12px', borderRadius: 8, cursor: 'pointer', marginBottom: 6, background: chat._id === chatId ? 'rgba(108,71,255,0.08)' : 'var(--bg)', border: '1px solid var(--border)', fontSize: 14 }}
+              >
+                <div style={{ fontWeight: 500 }}>{chat.title || 'Untitled Chat'}</div>
+                <div style={{ fontSize: 12, color: 'var(--muted)', marginTop: 2 }}>
+                  {new Date(chat.updatedAt).toLocaleDateString('en-IN', { day: 'numeric', month: 'short', hour: '2-digit', minute: '2-digit' })}
+                </div>
+              </div>
+            ))
+          )}
+        </div>
+      )}
 
       <div className="card" style={{ display: 'flex', flexDirection: 'column', height: 560 }}>
         {/* Quick chips */}

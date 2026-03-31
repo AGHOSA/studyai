@@ -9,8 +9,11 @@ const notesRoutes = require('./routes/notes');
 const aiRoutes = require('./routes/ai');
 const quizRoutes = require('./routes/quiz');
 const plannerRoutes = require('./routes/planner');
+const dashboardRoutes = require('./routes/dashboard');
+const chatsRoutes = require('./routes/chats');
 
 const app = express();
+app.set('trust proxy', 1);
 
 // Middleware
 app.use(cors({ origin: process.env.CLIENT_URL || '*', credentials: true }));
@@ -40,6 +43,8 @@ app.use('/api/notes', notesRoutes);
 app.use('/api/ai', aiLimiter, aiRoutes);
 app.use('/api/quiz', quizRoutes);
 app.use('/api/planner', plannerRoutes);
+app.use('/api/dashboard', dashboardRoutes);
+app.use('/api/chats', chatsRoutes);
 
 // Health check
 app.get('/api/health', (req, res) => {
