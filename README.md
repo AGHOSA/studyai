@@ -1,24 +1,46 @@
 # 🎓 StudyAI Platform
 
-AI-powered study platform for students. Summarize notes, solve doubts, generate quizzes, and plan your study schedule — all in one place.
+> An AI-powered study platform built for students — summarize notes, solve doubts, generate quizzes, and plan your study schedule.
 
 ---
 
-## Tech Stack
+## ✨ Features
 
-| Layer | Tech |
-|-------|------|
+- 📝 **Note Summarizer** — Paste your notes and get a clean summary instantly
+- 📄 **PDF Upload** — Upload PDF files and summarize them (Pro only)
+- 🤖 **Doubt Solver** — Chat with AI to clear your doubts
+- 📊 **Quiz Generator** — Auto-generate MCQ quizzes from your notes
+- 📅 **Study Planner** — Get a personalized study plan
+- 🔐 **Auth System** — Signup/Login with JWT
+
+---
+
+## 💰 Freemium Model
+
+| Feature | Free | Pro (₹99/mo) |
+|---------|------|--------------|
+| AI calls/day | 3 | Unlimited |
+| PDF upload | ❌ | ✅ |
+| Chat history | Last 10 msgs | Full history |
+| Notes & Quiz | Unlimited | Unlimited |
+| Priority support | ❌ | ✅ |
+
+---
+
+## 🛠️ Tech Stack
+
+| Layer | Technology |
+|-------|------------|
 | Frontend | React.js + React Router |
 | Backend | Node.js + Express |
-| Database | MongoDB (Atlas) |
+| Database | MongoDB Atlas |
 | AI | OpenAI GPT-4o |
 | Auth | JWT |
 | File Upload | Multer + pdf-parse |
-| Deployment | Vercel (frontend) + Railway (backend) |
 
 ---
 
-## Project Structure
+## 📁 Project Structure
 
 ```
 studyai/
@@ -26,86 +48,104 @@ studyai/
 │   ├── models/         # MongoDB schemas (User, Note, Quiz, Chat)
 │   ├── routes/         # API routes (auth, ai, notes, quiz, planner)
 │   ├── middleware/     # JWT auth + Pro check
-│   ├── server.js       # Express app entry point
+│   ├── server.js       # Express entry point
 │   └── .env.example    # Environment variables template
 ├── frontend/
 │   ├── src/
-│   │   ├── pages/      # Dashboard, Summarizer, ChatBot, Quiz, Planner, Progress
-│   │   ├── components/ # Layout (sidebar + nav)
-│   │   ├── context/    # AuthContext (user state)
-│   │   └── utils/      # API calls (axios)
-│   └── vercel.json     # Vercel deployment config
-└── package.json        # Root scripts to run both services
+│   │   ├── pages/      # Dashboard, Summarizer, ChatBot, Quiz, Planner
+│   │   ├── components/ # Sidebar + Navbar
+│   │   ├── context/    # AuthContext (global user state)
+│   │   └── utils/      # Axios API calls
+│   └── vercel.json
+└── package.json
 ```
 
 ---
 
-## Local Setup
+## ⚙️ Local Setup (Run on your PC)
 
-### 1. Clone & install
+### Prerequisites
+Make sure you have these installed:
+- [Node.js](https://nodejs.org/) (v18+)
+- [Git](https://git-scm.com/)
+- A [MongoDB Atlas](https://www.mongodb.com/atlas) account (free)
+- An [OpenAI](https://platform.openai.com/) API key
+
+---
+
+### Step 1 — Clone the repo
 
 ```bash
 git clone https://github.com/yourusername/studyai.git
 cd studyai
-npm install          # installs concurrently
-npm run install:all  # installs backend + frontend deps
 ```
 
-### 2. Configure backend environment
+### Step 2 — Install dependencies
+
+```bash
+npm install
+npm run install:all
+```
+
+### Step 3 — Setup Backend environment
 
 ```bash
 cd backend
 cp .env.example .env
 ```
 
-Edit `.env`:
-```
+Now open `backend/.env` and fill in your values:
+
+```env
 PORT=5000
-MONGODB_URI=mongodb+srv://<user>:<pass>@cluster.mongodb.net/studyai
-JWT_SECRET=your_random_secret_here_make_it_long
+MONGODB_URI=mongodb+srv://<username>:<password>@cluster.mongodb.net/studyai
+JWT_SECRET=any_long_random_string_here
 OPENAI_API_KEY=sk-your-openai-key
 CLIENT_URL=http://localhost:3000
 ```
 
-### 3. Configure frontend environment
+> ⚠️ Never share your `.env` file or push it to GitHub!
+
+### Step 4 — Setup Frontend environment
 
 ```bash
 cd frontend
 cp .env.example .env
 ```
 
-Edit `.env`:
-```
+Open `frontend/.env` and add:
+
+```env
 REACT_APP_API_URL=http://localhost:5000/api
 ```
 
-### 4. Run both servers
+### Step 5 — Run the app
 
 ```bash
-# From root directory
+cd ..
 npm run dev
 ```
 
-- Frontend: http://localhost:3000
-- Backend: http://localhost:5000
-- API health: http://localhost:5000/api/health
+- 🌐 Frontend → http://localhost:3000
+- ⚙️ Backend → http://localhost:5000
+- ✅ Health check → http://localhost:5000/api/health
 
 ---
 
-## API Endpoints
+## 🔌 API Endpoints
 
 ### Auth
 | Method | Route | Description |
 |--------|-------|-------------|
 | POST | `/api/auth/signup` | Register new user |
-| POST | `/api/auth/login` | Login, get JWT |
-| GET | `/api/auth/me` | Get current user |
+| POST | `/api/auth/login` | Login and get JWT token |
+| GET | `/api/auth/me` | Get logged in user info |
 
-### AI (requires auth + credits)
+### AI (requires login + credits)
 | Method | Route | Description |
 |--------|-------|-------------|
 | POST | `/api/ai/summarize` | Summarize text notes |
-| POST | `/api/ai/summarize-pdf` | Upload + summarize PDF |
+| POST | `/api/ai/summarize-pdf` | Upload and summarize PDF |
 | POST | `/api/ai/chat` | Doubt solver chat |
 | POST | `/api/ai/generate-quiz` | Generate MCQ quiz |
 | POST | `/api/ai/study-plan` | Generate study plan |
@@ -121,55 +161,25 @@ npm run dev
 ### Quiz
 | Method | Route | Description |
 |--------|-------|-------------|
-| POST | `/api/quiz` | Save quiz |
-| POST | `/api/quiz/:id/submit` | Submit score |
+| POST | `/api/quiz` | Save a quiz |
+| POST | `/api/quiz/:id/submit` | Submit quiz score |
 | GET | `/api/quiz` | Get quiz history |
 
 ---
 
-## Freemium Model
+## ⚠️ Common Issues
 
-| Feature | Free | Pro (₹99/mo) |
-|---------|------|--------------|
-| AI calls/day | 3 | Unlimited |
-| PDF upload | ❌ | ✅ |
-| Notes saved | Unlimited | Unlimited |
-| Quiz history | Unlimited | Unlimited |
-| Chat history | Last 10 msgs | Full history |
-| Priority support | ❌ | ✅ |
+| Problem | Fix |
+|---------|-----|
+| MongoDB connection failed | Check your `MONGODB_URI` and whitelist `0.0.0.0/0` in Atlas Network Access |
+| OpenAI not working | Check your API key and make sure you have credits |
+| Port already in use | Kill the process using that port or change `PORT` in `.env` |
+| Frontend not connecting | Make sure `REACT_APP_API_URL` is correct in `frontend/.env` |
 
 ---
 
-## Deployment
+## ✅ What's Built
 
-### Frontend → Vercel
-
-```bash
-cd frontend
-npm run build
-# Push to GitHub → connect to Vercel
-# Set env: REACT_APP_API_URL=https://your-backend.railway.app/api
-```
-
-### Backend → Railway
-
-1. Push backend folder to GitHub
-2. Create new Railway project → Deploy from GitHub
-3. Add environment variables in Railway dashboard
-4. Railway auto-detects Node.js and runs `npm start`
-
-### Database → MongoDB Atlas
-
-1. Create free cluster at mongodb.com/atlas
-2. Add database user
-3. Whitelist all IPs (0.0.0.0/0) for Railway
-4. Copy connection string to `MONGODB_URI`
-
----
-
-## Phase Roadmap
-
-### ✅ Phase 1 (MVP - Done)
 - [x] JWT Auth (signup/login)
 - [x] AI Note Summarizer
 - [x] PDF Upload + Parse
@@ -178,30 +188,11 @@ npm run build
 - [x] Study Planner
 - [x] Freemium credit system
 
-### 🔜 Phase 2
-- [ ] Razorpay payment integration for Pro
-- [ ] Email verification
-- [ ] Flashcard generator
-- [ ] Subject-wise note organization
-- [ ] Mobile responsive improvements
-
-### 🚀 Phase 3
-- [ ] Performance analytics dashboard
-- [ ] AI-personalized weak-area detection
-- [ ] Group study rooms
-- [ ] Push notifications for study reminders
-- [ ] Mobile app (React Native)
-
 ---
 
-## Revenue Targets
+## 📄 License
 
-| Milestone | Users | MRR |
-|-----------|-------|-----|
-| Launch | 100 | ₹0 |
-| Month 3 | 1,000 | ₹9,900 |
-| Month 6 | 5,000 | ₹49,500 |
-| Year 1 | 20,000 | ₹1,98,000 |
+MIT License — free to use and modify.
 
 ---
 
