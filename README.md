@@ -33,16 +33,14 @@
 |-------|------------|
 | Frontend | React.js + React Router |
 | Backend | Node.js + Express |
-| Database | MongoDB Atlas |
-| AI | OpenAI GPT-4o |
+| Database | MongoDB (Railway hosted) |
+| AI | Groq AI (llama-3.3-70b-versatile) |
 | Auth | JWT |
 | File Upload | Multer + pdf-parse |
 
 ---
 
 ## 📁 Project Structure
-
-```
 studyai/
 ├── backend/
 │   ├── models/         # MongoDB schemas (User, Note, Quiz, Chat)
@@ -58,7 +56,6 @@ studyai/
 │   │   └── utils/      # Axios API calls
 │   └── vercel.json
 └── package.json
-```
 
 ---
 
@@ -68,15 +65,15 @@ studyai/
 Make sure you have these installed:
 - [Node.js](https://nodejs.org/) (v18+)
 - [Git](https://git-scm.com/)
-- A [MongoDB Atlas](https://www.mongodb.com/atlas) account (free)
-- An [OpenAI](https://platform.openai.com/) API key
+- [MongoDB](https://www.mongodb.com/try/download/community) (local) or Railway MongoDB
+- A [Groq](https://console.groq.com/) API key (free)
 
 ---
 
 ### Step 1 — Clone the repo
 
 ```bash
-git clone https://github.com/yourusername/studyai.git
+git clone https://github.com/AGHOSA/studyai.git
 cd studyai
 ```
 
@@ -98,9 +95,9 @@ Now open `backend/.env` and fill in your values:
 
 ```env
 PORT=5000
-MONGODB_URI=mongodb+srv://<username>:<password>@cluster.mongodb.net/studyai
+MONGODB_URI=mongodb://localhost:27017/studyai
 JWT_SECRET=any_long_random_string_here
-OPENAI_API_KEY=sk-your-openai-key
+GROQ_API_KEY=gsk_your_groq_key_here
 CLIENT_URL=http://localhost:3000
 ```
 
@@ -119,7 +116,15 @@ Open `frontend/.env` and add:
 REACT_APP_API_URL=http://localhost:5000/api
 ```
 
-### Step 5 — Run the app
+### Step 5 — Start MongoDB locally
+
+Make sure MongoDB is running on your PC:
+
+```bash
+mongod
+```
+
+### Step 6 — Run the app
 
 ```bash
 cd ..
@@ -171,8 +176,8 @@ npm run dev
 
 | Problem | Fix |
 |---------|-----|
-| MongoDB connection failed | Check your `MONGODB_URI` and whitelist `0.0.0.0/0` in Atlas Network Access |
-| OpenAI not working | Check your API key and make sure you have credits |
+| MongoDB connection failed | Make sure `mongod` is running locally or check Railway MongoDB URL |
+| Groq AI not working | Check your `GROQ_API_KEY` in `.env` — get a free key at console.groq.com |
 | Port already in use | Kill the process using that port or change `PORT` in `.env` |
 | Frontend not connecting | Make sure `REACT_APP_API_URL` is correct in `frontend/.env` |
 
@@ -187,6 +192,16 @@ npm run dev
 - [x] Quiz Generator + Scoring
 - [x] Study Planner
 - [x] Freemium credit system
+
+---
+
+## 🚀 Deployment
+
+| Part | Platform |
+|------|----------|
+| Frontend | Vercel (free) |
+| Backend | Railway (free) |
+| Database | Railway MongoDB (free) |
 
 ---
 
