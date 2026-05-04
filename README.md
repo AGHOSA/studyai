@@ -4,6 +4,15 @@
 
 ---
 
+## 🌐 Live Demo
+
+| Part | Platform |
+|------|----------|
+| Frontend | Deployed on Vercel |
+| Backend API | Deployed on Render |
+
+---
+
 ## ✨ Features
 
 - 📝 **Note Summarizer** — Paste your notes and get a clean summary instantly
@@ -33,10 +42,20 @@
 |-------|------------|
 | Frontend | React.js + React Router |
 | Backend | Node.js + Express |
-| Database | MongoDB (Railway hosted) |
+| Database | MongoDB Atlas (free cloud) |
 | AI | Groq AI (llama-3.3-70b-versatile) |
 | Auth | JWT |
 | File Upload | Multer + pdf-parse |
+
+---
+
+## 🚀 Deployment
+
+| Part | Platform |
+|------|----------|
+| Frontend | Vercel (free forever) |
+| Backend | Render (free tier) |
+| Database | MongoDB Atlas (free 512MB) |
 
 ---
 
@@ -55,85 +74,61 @@ studyai/
 │   │   ├── context/    # AuthContext (global user state)
 │   │   └── utils/      # Axios API calls
 │   └── vercel.json
-└── package.json
+├── render.yaml
+└── README.md
 
 ---
 
-## ⚙️ Local Setup (Run on your PC)
+## ⚙️ Local Setup
 
 ### Prerequisites
-Make sure you have these installed:
-- [Node.js](https://nodejs.org/) (v18+)
-- [Git](https://git-scm.com/)
-- [MongoDB](https://www.mongodb.com/try/download/community) (local) or Railway MongoDB
-- A [Groq](https://console.groq.com/) API key (free)
-
----
+- Node.js (v18+)
+- Git
+- MongoDB (local) or MongoDB Atlas
+- Groq API key (free at console.groq.com)
 
 ### Step 1 — Clone the repo
-
 ```bash
 git clone https://github.com/AGHOSA/studyai.git
 cd studyai
 ```
 
-### Step 2 — Install dependencies
-
-```bash
-npm install
-npm run install:all
-```
-
-### Step 3 — Setup Backend environment
-
+### Step 2 — Backend setup
 ```bash
 cd backend
 cp .env.example .env
+npm install
 ```
 
-Now open `backend/.env` and fill in your values:
-
+Fill in `backend/.env`:
 ```env
 PORT=5000
-MONGODB_URI=mongodb://localhost:27017/studyai
-JWT_SECRET=any_long_random_string_here
-GROQ_API_KEY=gsk_your_groq_key_here
+MONGODB_URI=your_mongodb_uri_here
+JWT_SECRET=any_long_random_string
+GROQ_API_KEY=your_groq_api_key_here
 CLIENT_URL=http://localhost:3000
 ```
 
-> ⚠️ Never share your `.env` file or push it to GitHub!
-
-### Step 4 — Setup Frontend environment
-
+### Step 3 — Frontend setup
 ```bash
-cd frontend
+cd ../frontend
 cp .env.example .env
+npm install
 ```
 
-Open `frontend/.env` and add:
-
+Fill in `frontend/.env`:
 ```env
 REACT_APP_API_URL=http://localhost:5000/api
 ```
 
-### Step 5 — Start MongoDB locally
-
-Make sure MongoDB is running on your PC:
-
+### Step 4 — Run
 ```bash
-mongod
+# Terminal 1 - Backend
+cd backend && node server.js
+
+# Terminal 2 - Frontend
+cd frontend && npm start
 ```
-
-### Step 6 — Run the app
-
-```bash
-cd ..
-npm run dev
-```
-
-- 🌐 Frontend → http://localhost:3000
-- ⚙️ Backend → http://localhost:5000
-- ✅ Health check → http://localhost:5000/api/health
 
 ---
 
@@ -143,10 +138,10 @@ npm run dev
 | Method | Route | Description |
 |--------|-------|-------------|
 | POST | `/api/auth/signup` | Register new user |
-| POST | `/api/auth/login` | Login and get JWT token |
-| GET | `/api/auth/me` | Get logged in user info |
+| POST | `/api/auth/login` | Login and get JWT |
+| GET | `/api/auth/me` | Get logged in user |
 
-### AI (requires login + credits)
+### AI
 | Method | Route | Description |
 |--------|-------|-------------|
 | POST | `/api/ai/summarize` | Summarize text notes |
@@ -176,10 +171,10 @@ npm run dev
 
 | Problem | Fix |
 |---------|-----|
-| MongoDB connection failed | Make sure `mongod` is running locally or check Railway MongoDB URL |
-| Groq AI not working | Check your `GROQ_API_KEY` in `.env` — get a free key at console.groq.com |
-| Port already in use | Kill the process using that port or change `PORT` in `.env` |
-| Frontend not connecting | Make sure `REACT_APP_API_URL` is correct in `frontend/.env` |
+| MongoDB connection failed | Check your MONGODB_URI in .env |
+| Groq AI not working | Check your GROQ_API_KEY in .env |
+| Port already in use | Kill the process or change PORT in .env |
+| Frontend not connecting | Check REACT_APP_API_URL in frontend/.env |
 
 ---
 
@@ -192,16 +187,7 @@ npm run dev
 - [x] Quiz Generator + Scoring
 - [x] Study Planner
 - [x] Freemium credit system
-
----
-
-## 🚀 Deployment
-
-| Part | Platform |
-|------|----------|
-| Frontend | Vercel (free) |
-| Backend | Railway (free) |
-| Database | Railway MongoDB (free) |
+- [x] Fully deployed on cloud (free)
 
 ---
 
