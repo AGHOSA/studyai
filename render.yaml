@@ -8,16 +8,10 @@ services:
       - key: PORT
         value: 5000
       - key: MONGODB_URI
-        value: mongodb://mongo:27017/studyai
+        value: mongodb+srv://studyai:studyai123@cluster.mongodb.net/studyai
       - key: JWT_SECRET
         value: anylongrandomstring123
       - key: GROQ_API_KEY
         sync: false
       - key: CLIENT_URL
         value: https://studyai.vercel.app
-
-  - type: pserv
-    name: mongo
-    runtime: docker
-    image:
-      url: docker.io/library/mongo:6
