@@ -53,8 +53,8 @@
 
 | Part | Platform |
 |------|----------|
-| Frontend | Vercel (free forever) |
-| Backend | Render (free tier) |
+| Frontend | https://studyai-brown.vercel.app |
+| Backend API | https://your-render-url.onrender.com |
 | Database | MongoDB Atlas (free 512MB) |
 
 ---
@@ -190,6 +190,10 @@ cd frontend && npm start
 - [x] Fully deployed on cloud (free)
 
 ---
+## 👤 Author
+**Arnab Ghosal**
+B.Tech CSE (AI & ML) — C.V. Raman Global University
+🔗 [LinkedIn](https://www.linkedin.com/in/arnab-ghosal-1453a81b9)
 
 ## 📄 License
 
